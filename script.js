@@ -72,7 +72,8 @@ function init() {
 
   matLine = new LineMaterial({
     color: 0xffffff,
-    linewidth: 20, // in world units with size attenuation, pixels otherwise
+    worldUnits: true,
+    linewidth: 1, // in world units with size attenuation, pixels otherwise
     vertexColors: true,
   });
 
@@ -88,7 +89,6 @@ function init() {
 function onWindowResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
-
   renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
@@ -96,8 +96,6 @@ function animate() {
   requestAnimationFrame(animate);
 
   // main scene
-
-  renderer.setClearColor(0x000000, 1);
 
   renderer.setViewport(0, 0, window.innerWidth, window.innerHeight);
 
