@@ -4,7 +4,6 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { Line2 } from "three/addons/lines/Line2.js";
 import { LineMaterial } from "three/addons/lines/LineMaterial.js";
 import { LineGeometry } from "three/addons/lines/LineGeometry.js";
-import * as GeometryUtils from "three/addons/utils/GeometryUtils.js";
 
 let line, matLine, renderer, scene, camera, controls;
 
@@ -35,22 +34,17 @@ function init() {
   const positions = [];
   const colors = [];
 
-  const points = GeometryUtils.hilbert3D(
+  // Change second argument of each Vector3 to represent point difference
+  const points = [
     new THREE.Vector3(0, 0, 0),
-    20.0,
-    1,
-    0,
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7
-  );
+    new THREE.Vector3(1, 0.25, 0),
+    new THREE.Vector3(2, -0.5, 0),
+    new THREE.Vector3(3, -0.25, 0),
+    new THREE.Vector3(4, 0.5, 0),
+  ];
 
   const spline = new THREE.CatmullRomCurve3(points);
-  const divisions = Math.round(16 * points.length);
+  const divisions = Math.round(32 * points.length);
   const point = new THREE.Vector3();
   const color = new THREE.Color();
 
@@ -60,7 +54,14 @@ function init() {
     spline.getPoint(t, point);
     positions.push(point.x, point.y, point.z);
 
-    color.setHSL(t, 1.0, 0.5, THREE.SRGBColorSpace);
+    // Dark gray for EmoJimmy
+    color.set(0x222222);
+
+    if (point.y > 0) {
+      // Red if winning
+      color.set(0xff2222);
+    }
+
     colors.push(color.r, color.g, color.b);
   }
 
@@ -73,7 +74,7 @@ function init() {
   matLine = new LineMaterial({
     color: 0xffffff,
     worldUnits: true,
-    linewidth: 1, // in world units with size attenuation, pixels otherwise
+    linewidth: 0.1, // in world units with size attenuation, pixels otherwise
     vertexColors: true,
   });
 
